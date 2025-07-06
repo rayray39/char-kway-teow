@@ -1,4 +1,4 @@
-import { Button, Stack, Textarea, Title } from "@mantine/core"
+import { Button, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
 import { useState } from "react"
 
 function App() {
@@ -10,6 +10,11 @@ function App() {
 
     const handleSubmit = async () => {
         console.log('Submit button clicked.');
+        if (!prompt) {
+            console.log('Prompt is empty.');
+            return;
+        }
+
         console.log(`Prompt: ${prompt}`);
 
         setIsLoading(true);
@@ -51,7 +56,7 @@ function App() {
                 </Stack>
                     
                 <Stack style={{
-                    maxWidth:'40%'
+                    minWidth:'40%'
                 }}>
                     <Textarea
                         label="Provide a brief summary of your implementation"
@@ -68,12 +73,36 @@ function App() {
                     }}>Submit</Button>
 
                     {
-                        isLoading ? 'Loading...' : commitMessage
+                        isLoading ? <Loading /> : <CommitMessage text={commitMessage} />
                     }
+
                 </Stack>
             </Stack>
         </>
     )
+}
+
+function CommitMessage({ text }:{ text:string }) {
+    // returns a textarea that contains the generated git commit message.
+    return <>
+        <Textarea
+            label='Generated git commit message'
+            autosize 
+            minRows={5}
+            value={text}
+        />
+    </>
+}
+
+function Loading() {
+    // returns a loading spinner
+    return <Group
+        gap={'xs'}
+        justify="center"
+    >
+        <Loader size={'sm'}  color="rgba(0, 0, 0, 1)" />
+        {'Loading...'}
+    </Group>
 }
 
 export default App

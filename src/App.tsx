@@ -8,7 +8,9 @@ function App() {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);     // true if the response from the model is not fetched yet
 
-    const [emptyPromptError, setEmptyPromptError] = useState<boolean>(false);
+    const [emptyPromptError, setEmptyPromptError] = useState<boolean>(false);   // true if prompt field is empty on submission
+
+    const [isSubmitSuccess, setIsSubmitSuccess] = useState<boolean>(false);
 
     const handleSubmit = async () => {
         console.log('Submit button clicked.');
@@ -21,6 +23,7 @@ function App() {
         console.log(`Prompt: ${prompt}`);
 
         setIsLoading(true);
+        setIsSubmitSuccess(false);
         try {
             const response = await fetch('http://localhost:5000/api/generate-commit', {
                 method:'POST',
@@ -32,6 +35,7 @@ function App() {
 
             setCommitMessage(data.modelResponse);
             setIsLoading(false);
+            setIsSubmitSuccess(true);
             console.log(data.message);
         } catch (error) {
             console.error("Error:", error);
@@ -78,7 +82,7 @@ function App() {
                     }}>Submit</Button>
 
                     {
-                        isLoading ? <Loading /> : <CommitMessage text={commitMessage} />
+                        isLoading ? <Loading /> : (isSubmitSuccess ? <CommitMessage text={commitMessage} /> : null)
                     }
 
                 </Stack>

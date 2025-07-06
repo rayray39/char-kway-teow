@@ -12,6 +12,7 @@
   "dependencies": {
     "@mantine/core": "^8.1.2",
     "@mantine/hooks": "^8.1.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "react": "^19.1.0",

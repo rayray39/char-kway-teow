@@ -2,16 +2,19 @@ import { Button, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
 import { useState } from "react"
 
 function App() {
-    const [prompt, setPrompt] = useState<string>('');
+    const [prompt, setPrompt] = useState<string>('');   // user's prompt
 
-    const [commitMessage, setCommitMessage] = useState<string>('');
+    const [commitMessage, setCommitMessage] = useState<string>('');     // generated git commit message
 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);     // true if the response from the model is not fetched yet
+
+    const [emptyPromptError, setEmptyPromptError] = useState<boolean>(false);
 
     const handleSubmit = async () => {
         console.log('Submit button clicked.');
         if (!prompt) {
             console.log('Prompt is empty.');
+            setEmptyPromptError(true);
             return;
         }
 
@@ -28,7 +31,7 @@ function App() {
             const data = await response.json();
 
             setCommitMessage(data.modelResponse);
-            setIsLoading(false)
+            setIsLoading(false);
             console.log(data.message);
         } catch (error) {
             console.error("Error:", error);
@@ -36,6 +39,7 @@ function App() {
         }
         
         setPrompt('');
+        setEmptyPromptError(false);
     }
 
     return (
@@ -65,6 +69,7 @@ function App() {
                         minRows={3}
                         value={prompt}
                         onChange={(event) => setPrompt(event.target.value)}
+                        error={emptyPromptError ? "Field cannot be empty" : null}
                     />
 
                     <Button variant="default" onClick={handleSubmit} style={{

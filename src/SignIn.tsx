@@ -1,4 +1,4 @@
-import { Alert, Button, Loader, Stack, TextInput, Title } from "@mantine/core"
+import { Alert, Button, Group, Loader, Stack, TextInput, Title, useMantineColorScheme } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +17,9 @@ function SignIn() {
     const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [dark, setDark] = useState<boolean>(false);
+    const { setColorScheme } = useMantineColorScheme();
 
     const handleSignIn = async () => {
         console.log('Signing in...');
@@ -70,6 +73,17 @@ function SignIn() {
         navigate('/app');
     }
 
+    const toggleColorScheme = () => {
+        // updates the color theme of the app (light, dark)
+        if (dark) {
+            setColorScheme('light');
+            setDark(false);
+        } else {
+            setColorScheme('dark');
+            setDark(true);
+        }
+    }
+
     return <>
         <Stack
             h={'100vh'}
@@ -89,6 +103,10 @@ function SignIn() {
             <Stack style={{
                 minWidth:'40%'
             }}>
+                <Group justify="flex-end">
+                    <Button variant="default" style={{ fontSize:'20px', textAlign:'center' }} onClick={toggleColorScheme}>{dark ? '🌞' : '🌛'}</Button>
+                </Group>
+
                 <TextInput
                     label="Email"
                     placeholder="Enter your email here"

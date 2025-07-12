@@ -1,4 +1,4 @@
-import { Button, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
+import { Button, CopyButton, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
 import { useState } from "react"
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
             console.error("Error:", error);
             alert("Error: Failed to generate commit message.");
         }
-        
+
         setPrompt('');
         setEmptyPromptError(false);
     }
@@ -93,13 +93,24 @@ function App() {
 
 function CommitMessage({ text }:{ text:string }) {
     // returns a textarea that contains the generated git commit message.
+    const [outputText, setOutputText] = useState<string>(text);
+
     return <>
         <Textarea
             label='Generated git commit message'
             autosize 
             minRows={5}
-            value={text}
+            value={outputText}
+            onChange={(event) => setOutputText(event.target.value)}
         />
+
+        <CopyButton value={outputText}>
+            {({ copied, copy }) => (
+                <Button color='green' variant={copied ? 'light' : 'default'} onClick={copy}>
+                    {copied ? 'copied' : 'copy'}
+                </Button>
+            )}
+        </CopyButton>
     </>
 }
 

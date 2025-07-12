@@ -82,8 +82,8 @@ function SignIn() {
                 justify="center"
                 align="center"
             >
-                <Title order={1} >CharKwayTeow</Title>
-                <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro</Title>
+                <Title order={1} >CharKwayTeow🫡</Title>
+                <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro✅</Title>
             </Stack>
 
             <Stack style={{

@@ -48,6 +48,10 @@ function SignIn() {
                 })
             })
 
+            if (!response.ok) {
+                throw new Error();
+            }
+
             const data = await response.json();
             console.log(data.message);
 

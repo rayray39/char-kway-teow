@@ -1,4 +1,4 @@
-import { Alert, Button, Stack, TextInput, Title } from "@mantine/core"
+import { Alert, Button, Loader, Stack, TextInput, Title } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 
@@ -14,9 +14,11 @@ function SignIn() {
     const [isPasswordMissing, setIsPasswordMissing] = useState<boolean>(false);
 
     // password verification
-    const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
+    const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
 
-    const handleSignIn = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const handleSignIn = async () => {
         console.log('Signing in...');
         setIsEmailMissing(false);
         setIsPasswordMissing(false);
@@ -30,12 +32,34 @@ function SignIn() {
             return;
         }
 
+        setIsPasswordValid(true);   // unrender alert component at start
+        setIsLoading(true);
+
         // make call to sign in route on backend
         try {
-            
+            const response = await fetch('http://localhost:5000/auth/sign-in', {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+
+            const data = await response.json();
+            console.log(data.message);
+
+            localStorage.setItem('jwtToken', data.token);
+            setIsPasswordValid(true);
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 1000);
         } catch (error) {
             console.log('Failed to sign in: ', error);
             setIsPasswordValid(false);
+            setIsLoading(false);
             return;
         }
 
@@ -77,7 +101,7 @@ function SignIn() {
                     error={isPasswordMissing ? "Password is required" : null}
                 />
 
-                <Button variant="default" onClick={handleSignIn}>Sign In</Button>
+                <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
 
                 {
                     !isPasswordValid && <Alert 
@@ -86,7 +110,7 @@ function SignIn() {
                             radius='lg' 
                             withCloseButton 
                             title="Unsuccessful sign in"
-                            onClose={() => setIsPasswordValid(true)}
+                            onClose={() => (setIsPasswordValid(true))}
                         >
                         Incorrect user credentials!
                     </Alert>

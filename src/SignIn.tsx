@@ -8,8 +8,22 @@ function SignIn() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const [isEmailMissing, setIsEmailMissing] = useState<boolean>(false);
+    const [isPasswordMissing, setIsPasswordMissing] = useState<boolean>(false);
+
     const handleSignIn = () => {
         console.log('Signing in...');
+        setIsEmailMissing(false);
+        setIsPasswordMissing(false);
+
+        if (!email) {
+            setIsEmailMissing(true);
+            return;
+        }
+        if (!password) {
+            setIsPasswordMissing(true);
+            return;
+        }
 
         // make call to sign in route on backend
 
@@ -40,6 +54,7 @@ function SignIn() {
                     placeholder="Enter your email here"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
+                    error={isEmailMissing ? "Email is required" : null}
                 />
 
                 <TextInput
@@ -47,6 +62,7 @@ function SignIn() {
                     placeholder="Enter your password here"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    error={isPasswordMissing ? "Password is required" : null}
                 />
 
                 <Button variant="default" onClick={handleSignIn}>Sign In</Button>

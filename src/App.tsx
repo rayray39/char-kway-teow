@@ -24,23 +24,30 @@ function App() {
 
         setIsLoading(true);
         setIsSubmitSuccess(false);
-        try {
-            const response = await fetch('http://localhost:5000/api/generate-commit', {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ prompt })
-            })
+        // try {
+        //     const response = await fetch('http://localhost:5000/api/generate-commit', {
+        //         method:'POST',
+        //         headers:{'Content-Type':'application/json'},
+        //         body: JSON.stringify({ prompt })
+        //     })
 
-            const data = await response.json();
+        //     const data = await response.json();
 
-            setCommitMessage(data.modelResponse);
+        //     setCommitMessage(data.modelResponse);
+        //     setIsLoading(false);
+        //     setIsSubmitSuccess(true);
+        //     console.log(data.message);
+        // } catch (error) {
+        //     console.error("Error:", error);
+        //     alert("Error: Failed to generate commit message.");
+        // }
+
+        // for testing, simulate fetch
+        setTimeout(() => {
+            setCommitMessage('dummy data');
             setIsLoading(false);
             setIsSubmitSuccess(true);
-            console.log(data.message);
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Error: Failed to generate commit message.");
-        }
+        }, 2000);
 
         setPrompt('');
         setEmptyPromptError(false);

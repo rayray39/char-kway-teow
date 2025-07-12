@@ -11,7 +11,7 @@ import PrivateRoute from './PrivateRoute.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <MantineProvider>
+        <MantineProvider defaultColorScheme='light'>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<SignIn />} />

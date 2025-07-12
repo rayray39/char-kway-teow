@@ -1,4 +1,4 @@
-import { Button, CopyButton, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
+import { Button, CopyButton, Group, Loader, Stack, Textarea, Title, useMantineColorScheme } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,9 @@ function App() {
     const [emptyPromptError, setEmptyPromptError] = useState<boolean>(false);   // true if prompt field is empty on submission
 
     const [isSubmitSuccess, setIsSubmitSuccess] = useState<boolean>(false);
+
+    const [dark, setDark] = useState<boolean>(false);
+    const { setColorScheme } = useMantineColorScheme();
 
     const handleSubmit = async () => {
         console.log('Submit button clicked.');
@@ -57,10 +60,22 @@ function App() {
     }
 
     const handleSignOut = () => {
+        // logs the user out and removes the JWT token from local storage
         console.log('signing out...');
         localStorage.removeItem('jwtToken');
         console.log('successfully logged out');
         navigate('/');
+    }
+
+    const toggleColorScheme = () => {
+        // updates the color theme of the app (light, dark)
+        if (dark) {
+            setColorScheme('light');
+            setDark(false);
+        } else {
+            setColorScheme('dark');
+            setDark(true);
+        }
     }
 
     return (
@@ -79,8 +94,8 @@ function App() {
                         width:'40%'
                     }}
                 >
-                    <Title order={1} >CharKwayTeow</Title>
-                    <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro</Title>
+                    <Title order={1} >CharKwayTeow🫡</Title>
+                    <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro✅</Title>
                 </Stack>
                     
                 <Stack style={{
@@ -90,7 +105,7 @@ function App() {
                         justify="space-between"
                     >
                         <Button variant="default" onClick={handleSignOut}>Sign Out</Button>
-                        <Button variant="default" onClick={handleSignOut}>dark</Button>
+                        <Button variant="default" style={{ fontSize:'20px', textAlign:'center' }} onClick={toggleColorScheme}>{dark ? '🌞' : '🌛'}</Button>
                     </Group>
 
                     <Textarea

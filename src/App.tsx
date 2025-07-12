@@ -1,7 +1,10 @@
 import { Button, CopyButton, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 function App() {
+    const navigate = useNavigate();
+    
     const [prompt, setPrompt] = useState<string>('');   // user's prompt
 
     const [commitMessage, setCommitMessage] = useState<string>('');     // generated git commit message
@@ -53,6 +56,13 @@ function App() {
         setEmptyPromptError(false);
     }
 
+    const handleSignOut = () => {
+        console.log('signing out...');
+        localStorage.removeItem('jwtToken');
+        console.log('successfully logged out');
+        navigate('/');
+    }
+
     return (
         <>
             <Stack
@@ -65,6 +75,9 @@ function App() {
                     gap='xs'
                     justify="center"
                     align="center"
+                    style={{
+                        width:'40%'
+                    }}
                 >
                     <Title order={1} >CharKwayTeow</Title>
                     <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro</Title>
@@ -73,6 +86,13 @@ function App() {
                 <Stack style={{
                     minWidth:'40%'
                 }}>
+                    <Group 
+                        justify="space-between"
+                    >
+                        <Button variant="default" onClick={handleSignOut}>Sign Out</Button>
+                        <Button variant="default" onClick={handleSignOut}>dark</Button>
+                    </Group>
+
                     <Textarea
                         label="Provide a brief summary of your implementation"
                         placeholder="Describe your implementation"
@@ -80,7 +100,7 @@ function App() {
                         minRows={3}
                         value={prompt}
                         onChange={(event) => setPrompt(event.target.value)}
-                        error={emptyPromptError ? "Field cannot be empty" : null}
+                        error={emptyPromptError ? "Input cannot be empty" : null}
                     />
 
                     <Button variant="default" onClick={handleSubmit} style={{

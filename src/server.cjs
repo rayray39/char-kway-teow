@@ -11,9 +11,11 @@ app.use(express.json());
 
 // setup routes
 const openrouter = require('./routes/openrouter.cjs')
+const auth = require('./routes/auth.cjs')
 
 // load routes
 app.use('/openrouter', openrouter)
+app.use('/auth', auth)
 
 app.listen(PORT, () => {
     console.log(`Express server running at http://localhost:${PORT}`);

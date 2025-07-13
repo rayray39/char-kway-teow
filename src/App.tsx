@@ -1,6 +1,7 @@
 import { Button, CopyButton, Group, Loader, Stack, Textarea, Title, useMantineColorScheme } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import { useColorScheme } from "./utils/ColorSchemeContext";
 
 function App() {
     const navigate = useNavigate();
@@ -15,8 +16,7 @@ function App() {
 
     const [isSubmitSuccess, setIsSubmitSuccess] = useState<boolean>(false);
 
-    const [dark, setDark] = useState<boolean>(false);
-    const { setColorScheme } = useMantineColorScheme();
+    const { dark, toggleColorScheme } = useColorScheme();
 
     const handleSubmit = async () => {
         console.log('Submit button clicked.');
@@ -65,17 +65,6 @@ function App() {
         localStorage.removeItem('jwtToken');
         console.log('successfully logged out');
         navigate('/');
-    }
-
-    const toggleColorScheme = () => {
-        // updates the color theme of the app (light, dark)
-        if (dark) {
-            setColorScheme('light');
-            setDark(false);
-        } else {
-            setColorScheme('dark');
-            setDark(true);
-        }
     }
 
     return (

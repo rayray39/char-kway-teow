@@ -7,21 +7,24 @@ import { MantineProvider } from '@mantine/core';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from './SignIn.tsx';
 import PrivateRoute from './PrivateRoute.tsx';
+import ColorSchemeProvider from './utils/ColorSchemeContext.tsx';
 
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <MantineProvider defaultColorScheme='light'>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<SignIn />} />
-                    <Route path="/app" element={
-                        <PrivateRoute>
-                            <App />
-                        </PrivateRoute>
-                    } />
-                </Routes>
-            </BrowserRouter>
+            <ColorSchemeProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<SignIn />} />
+                        <Route path="/app" element={
+                            <PrivateRoute>
+                                <App />
+                            </PrivateRoute>
+                        } />
+                    </Routes>
+                </BrowserRouter>
+            </ColorSchemeProvider>
         </MantineProvider>
     </StrictMode>,
 )

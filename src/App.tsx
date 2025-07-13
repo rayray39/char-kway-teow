@@ -1,4 +1,4 @@
-import { Button, CopyButton, Group, Loader, Stack, Textarea, Title, useMantineColorScheme } from "@mantine/core"
+import { Button, CopyButton, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";

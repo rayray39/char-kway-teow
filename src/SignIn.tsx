@@ -38,6 +38,27 @@ function SignIn() {
         console.log("Successfully sent OTP to user's email.");
     }
 
+    const isOtpVerified = async () => {
+        // verifies the user's otp
+        console.log("Verifying user's OTP.");
+        const {
+            data: { session },
+            error,
+        } = await supabase.auth.verifyOtp({
+            email: email,
+            token: otp,
+            type: 'email',
+        })
+    
+        if (error) {
+            console.log("Error verifying OTP.");
+            return false;
+        }
+    
+        console.log("Successfully verified OTP.");
+        return true;
+    }
+
     const handleSignIn = async () => {
         // signs the user via JWT, which will be stored in local storage.
         console.log('Signing in...');
@@ -58,6 +79,11 @@ function SignIn() {
 
         // make call to sign in route on backend
         try {
+            if (!isOtpVerified()) {
+                // check for valid otp before generating JWT token
+                throw new Error();
+            }
+
             const response = await fetch('http://localhost:5000/auth/sign-in', {
                 method:'POST',
                 headers:{

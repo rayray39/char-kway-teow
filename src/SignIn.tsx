@@ -8,14 +8,14 @@ function SignIn() {
 
     // for user's email and password
     const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [otp, setOtp] = useState<string>('');
 
-    // client side validation for email and password
+    // client side validation for email and otp
     const [isEmailMissing, setIsEmailMissing] = useState<boolean>(false);
-    const [isPasswordMissing, setIsPasswordMissing] = useState<boolean>(false);
+    const [isOtpMissing, setIsOtpMissing] = useState<boolean>(false);
 
-    // password verification
-    const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
+    // otp verification
+    const [isOtpValid, setIsOtpValid] = useState<boolean>(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -24,18 +24,18 @@ function SignIn() {
     const handleSignIn = async () => {
         console.log('Signing in...');
         setIsEmailMissing(false);
-        setIsPasswordMissing(false);
+        setIsOtpMissing(false);
 
         if (!email) {
             setIsEmailMissing(true);
             return;
         }
-        if (!password) {
-            setIsPasswordMissing(true);
+        if (!otp) {
+            setIsOtpMissing(true);
             return;
         }
 
-        setIsPasswordValid(true);   // unrender alert component at start
+        setIsOtpValid(true);   // unrender alert component at start
         setIsLoading(true);
 
         // make call to sign in route on backend
@@ -47,7 +47,7 @@ function SignIn() {
                 },
                 body:JSON.stringify({
                     email: email,
-                    password: password
+                    password: otp
                 })
             })
 
@@ -59,13 +59,13 @@ function SignIn() {
             console.log(data.message);
 
             localStorage.setItem('jwtToken', data.token);
-            setIsPasswordValid(true);
+            setIsOtpValid(true);
             setTimeout(() => {
                 setIsLoading(false)
             }, 1000);
         } catch (error) {
             console.log('Failed to sign in: ', error);
-            setIsPasswordValid(false);
+            setIsOtpValid(false);
             setIsLoading(false);
             return;
         }
@@ -105,23 +105,29 @@ function SignIn() {
                 />
 
                 <TextInput
-                    label="Password"
-                    placeholder="Enter your password here"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    error={isPasswordMissing ? "Password is required" : null}
+                    label="OTP"
+                    placeholder="Enter your OTP here"
+                    value={otp}
+                    onChange={(event) => setOtp(event.target.value)}
+                    error={isOtpMissing ? "OTP is required" : null}
                 />
 
-                <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
+                <Group
+                    justify="space-between"
+                    grow
+                >
+                    <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Get OTP"}</Button>
+                    <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
+                </Group>
 
                 {
-                    !isPasswordValid && <Alert 
+                    !isOtpValid && <Alert 
                             variant="light" 
                             color="red" 
                             radius='lg' 
                             withCloseButton 
                             title="Unsuccessful sign in"
-                            onClose={() => (setIsPasswordValid(true))}
+                            onClose={() => (setIsOtpValid(true))}
                         >
                         Incorrect user credentials!
                     </Alert>

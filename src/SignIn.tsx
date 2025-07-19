@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Loader, Stack, TextInput, Title } from "@mantine/core"
+import { Alert, Button, Group, Loader, Stack, TextInput, Title, Tooltip } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
@@ -163,7 +163,9 @@ function SignIn() {
                     justify="space-between"
                     grow
                 >
-                    <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
+                    <Tooltip label='Check email for OTP' withArrow arrowPosition="center" arrowSize={4} position="bottom">
+                        <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
+                    </Tooltip>
                     <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
                 </Group>
 

@@ -6,7 +6,7 @@ import { useColorScheme } from "./utils/ColorSchemeContext";
 function SignIn() {
     const navigate = useNavigate();
 
-    // for user's email and password
+    // for user's email and otp
     const [email, setEmail] = useState<string>('');
     const [otp, setOtp] = useState<string>('');
 
@@ -21,7 +21,13 @@ function SignIn() {
 
     const { dark, toggleColorScheme } = useColorScheme();
 
+    const handleGetOtp = () => {
+        // sends OTP to user's email for input
+        console.log('sending otp to email...');
+    }
+
     const handleSignIn = async () => {
+        // signs the user via JWT, which will be stored in local storage.
         console.log('Signing in...');
         setIsEmailMissing(false);
         setIsOtpMissing(false);
@@ -58,7 +64,7 @@ function SignIn() {
             const data = await response.json();
             console.log(data.message);
 
-            localStorage.setItem('jwtToken', data.token);
+            localStorage.setItem('jwtToken', data.token);   // auth router will return JWT token
             setIsOtpValid(true);
             setTimeout(() => {
                 setIsLoading(false)
@@ -102,6 +108,7 @@ function SignIn() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     error={isEmailMissing ? "Email is required" : null}
+                    autoFocus
                 />
 
                 <TextInput
@@ -116,7 +123,7 @@ function SignIn() {
                     justify="space-between"
                     grow
                 >
-                    <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Get OTP"}</Button>
+                    <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
                     <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
                 </Group>
 

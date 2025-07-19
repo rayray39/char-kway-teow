@@ -3,6 +3,7 @@ const router = express.Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+import { supabase } from "./utils/supabaseClient";
 
 // dummy users (replace with users in database in the future)
 // the hashed version of the password, with salt added, is stored in the database
@@ -13,30 +14,44 @@ const users = [
 
 const secret = process.env.JWT_SECRET;
 
-router.post('/sign-in', (req, res) => {
-    const { email, password } = req.body;
+const isOtpVerified = async (email, otp) => {
+    // verifies the user's otp
+    console.log("Verifying user's OTP.");
+    const {
+        data: { session },
+        error,
+    } = await supabase.auth.verifyOtp({
+        email: email,
+        token: otp,
+        type: 'email',
+    })
 
-    if (!email || !password) {
+    if (error) {
+        console.log("Error verifying OTP.");
+        return false;
+    }
+
+    console.log("Successfully verified OTP.");
+    return true;
+}
+
+router.post('/sign-in', (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
         return res.status(400).json({ message: 'Missing credentials.' })
     }
 
-    // look for the user with matching email
-    const signInUser = users.find((user) => user.email === email)
-    if (!signInUser) {
-        return res.status(404).json({ message: 'User not found.' })
+    if (!isOtpVerified(email, otp)) {
+        return res.status(400).json({ message: 'Incorrect OTP.' })
     }
 
-    // verify password
-    const isPasswordValid = bcrypt.compareSync(password, signInUser.hashedPassword)
-    if (!isPasswordValid) {
-        return res.status(403).json({ message: 'Invalid user credentials.' })
-    }
+    // look for user in database
 
     // generate json web token
     const token = jwt.sign(
         {
-            id: signInUser.id,
-            email: signInUser.email
+            email: email
         },
             secret,
         {

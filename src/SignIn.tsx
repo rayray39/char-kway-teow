@@ -1,7 +1,8 @@
-import { Alert, Button, Group, Loader, Stack, TextInput, Title } from "@mantine/core"
+import { Alert, Button, Group, Loader, Stack, TextInput, Title, Tooltip } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
+import { supabase } from "./utils/supabaseClient";
 
 function SignIn() {
     const navigate = useNavigate();
@@ -21,9 +22,41 @@ function SignIn() {
 
     const { dark, toggleColorScheme } = useColorScheme();
 
-    const handleGetOtp = () => {
+    const handleGetOtp = async () => {
         // sends OTP to user's email for input
         console.log('sending otp to email...');
+
+        const { data, error } = await supabase.auth.signInWithOtp({
+            email: email,
+        })
+
+        if (error) {
+            console.log("Error sending OTP to user's email.");
+            return;
+        }
+
+        console.log("Successfully sent OTP to user's email.");
+    }
+
+    const verifyOtp = async () => {
+        // verifies the user's otp
+        console.log("Verifying user's OTP.");
+        const {
+            data: { session },
+            error,
+        } = await supabase.auth.verifyOtp({
+            email: email,
+            token: otp,
+            type: 'email',
+        })
+    
+        if (error) {
+            console.log("Error verifying OTP.");
+            return false;
+        }
+    
+        console.log("Successfully verified OTP.");
+        return true;
     }
 
     const handleSignIn = async () => {
@@ -46,6 +79,13 @@ function SignIn() {
 
         // make call to sign in route on backend
         try {
+            const isOtpVerified = await verifyOtp();
+            console.log(`is otp verified: ${isOtpVerified}`)
+            if (!isOtpVerified) {
+                // check for valid otp before generating JWT token
+                throw new Error();
+            }
+
             const response = await fetch('http://localhost:5000/auth/sign-in', {
                 method:'POST',
                 headers:{
@@ -53,7 +93,7 @@ function SignIn() {
                 },
                 body:JSON.stringify({
                     email: email,
-                    password: otp
+                    otp: otp
                 })
             })
 
@@ -123,7 +163,9 @@ function SignIn() {
                     justify="space-between"
                     grow
                 >
-                    <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
+                    <Tooltip label='Check email for OTP' withArrow arrowPosition="center" arrowSize={4} position="bottom">
+                        <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
+                    </Tooltip>
                     <Button variant="default" onClick={handleSignIn}>{isLoading ? <Loader color="black" size='sm' /> : "Sign In"}</Button>
                 </Group>
 

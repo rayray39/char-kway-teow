@@ -2,6 +2,7 @@ import { Alert, Button, Group, Loader, Stack, TextInput, Title } from "@mantine/
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
+import { supabase } from "./utils/supabaseClient";
 
 function SignIn() {
     const navigate = useNavigate();
@@ -21,9 +22,41 @@ function SignIn() {
 
     const { dark, toggleColorScheme } = useColorScheme();
 
-    const handleGetOtp = () => {
+    const handleGetOtp = async () => {
         // sends OTP to user's email for input
         console.log('sending otp to email...');
+
+        const { data, error } = await supabase.auth.signInWithOtp({
+            email: email,
+        })
+
+        if (error) {
+            console.log("Error sending OTP to user's email.");
+            return;
+        }
+
+        console.log("Successfully sent OTP to user's email.");
+    }
+
+    const verifyOtp = async () => {
+        // verifies the user's otp
+        console.log("Verifying user's OTP.");
+        const {
+            data: { session },
+            error,
+        } = await supabase.auth.verifyOtp({
+            email: email,
+            token: otp,
+            type: 'email',
+        })
+
+        if (error) {
+            console.log("Error verifying OTP.");
+            setIsOtpValid(false);
+            return;
+        }
+
+        console.log("Successfully verified OTP.");
     }
 
     const handleSignIn = async () => {
@@ -46,6 +79,11 @@ function SignIn() {
 
         // make call to sign in route on backend
         try {
+            verifyOtp();    // checks if the otp is valid
+            if (!isOtpValid) {
+                throw new Error();
+            }
+
             const response = await fetch('http://localhost:5000/auth/sign-in', {
                 method:'POST',
                 headers:{

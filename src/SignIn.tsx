@@ -38,7 +38,7 @@ function SignIn() {
         console.log("Successfully sent OTP to user's email.");
     }
 
-    const isOtpVerified = async () => {
+    const verifyOtp = async () => {
         // verifies the user's otp
         console.log("Verifying user's OTP.");
         const {
@@ -79,7 +79,9 @@ function SignIn() {
 
         // make call to sign in route on backend
         try {
-            if (!isOtpVerified()) {
+            const isOtpVerified = await verifyOtp();
+            console.log(`is otp verified: ${isOtpVerified}`)
+            if (!isOtpVerified) {
                 // check for valid otp before generating JWT token
                 throw new Error();
             }

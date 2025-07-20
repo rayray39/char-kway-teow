@@ -12,7 +12,7 @@ import ColorSchemeProvider from './utils/ColorSchemeContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <MantineProvider defaultColorScheme='light'>
+        <MantineProvider defaultColorScheme='light' theme={{ fontFamily: 'JetBrains Mono, monospace' }}>
             <ColorSchemeProvider>
                 <BrowserRouter>
                     <Routes>

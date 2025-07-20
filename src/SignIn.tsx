@@ -130,6 +130,9 @@ function SignIn() {
                 gap='xs'
                 justify="center"
                 align="center"
+                style={{
+                    marginTop:'10px'
+                }}
             >
                 <Title order={1} >CharKwayTeow🫡</Title>
                 <Title order={4} style={{ fontWeight:'normal' }}>Write git commit messages like a pro✅</Title>

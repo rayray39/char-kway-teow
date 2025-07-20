@@ -80,7 +80,8 @@ function App() {
                     justify="center"
                     align="center"
                     style={{
-                        width:'40%'
+                        width:'40%',
+                        marginTop:'10px'
                     }}
                 >
                     <Title order={1} >CharKwayTeow🫡</Title>

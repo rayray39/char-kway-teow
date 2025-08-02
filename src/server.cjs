@@ -1,4 +1,12 @@
-require('dotenv').config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
+if (!process.env.OPENROUTER_API_KEY) {
+    console.log('OpenRouter API key failed to load.');
+} else {
+    console.log('OpenRouter API key successfully loaded.')
+}
+
 const express = require('express');
 const cors = require('cors')
 

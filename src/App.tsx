@@ -136,7 +136,7 @@ function CommitMessage({ text }:{ text:string }) {
             onChange={(event) => setOutputText(event.target.value)}
         />
 
-        <CopyButton value={outputText}>
+        <CopyButton value={outputText} timeout={1000}>
             {({ copied, copy }) => (
                 <Button color='green' variant={copied ? 'light' : 'default'} onClick={copy}>
                     {copied ? 'copied' : 'copy'}

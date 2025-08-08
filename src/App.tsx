@@ -30,6 +30,7 @@ function App() {
 
         setIsLoading(true);
         setIsSubmitSuccess(false);
+
         try {
             const response = await fetch('http://localhost:5000/openrouter/api/generate-commit', {
                 method:'POST',
@@ -41,25 +42,33 @@ function App() {
             })
 
             if (!response.ok) {
-                const errorResponse = await response.text();
-                throw new Error(errorResponse);
+                if (response.status === 403) {
+                    // token expired, remove current expired token, sign user out
+                    alert("Current session expired, please sign in again.");
+                    handleSignOut();
+                    return;
+                } else if (response.status === 401) {
+                    // token not found
+                    alert("Authentication required. If you are already signed in, please sign out and request for a new OTP to sign in again.");
+                    return;
+                } else {
+                    const errorResponse = await response.text();
+                    throw new Error(errorResponse);
+                }
             }
 
             const data = await response.json();
 
             setCommitMessage(data.modelResponse);
 
-            setIsLoading(false);
             setIsSubmitSuccess(true);
             console.log(data.message);
         } catch (error) {
-            if (error instanceof Error) {
-                console.error("Error:", error.message);
-            } else {
-                console.error("Unknown error:", error);
-            }
-            alert("Error: Failed to generate commit message.");
+            alert(`Error [${error}]: Failed to generate commit message.`);
+        } finally {
+            setPrompt('');
             setIsLoading(false);
+            setEmptyPromptError(false);
         }
 
         // for testing, simulate fetch
@@ -69,9 +78,6 @@ function App() {
         //     setIsSubmitSuccess(true);
         // }, 2000);
         // getOpenRouterUsageLimits();
-        
-        setPrompt('');
-        setEmptyPromptError(false);
     }
 
     const handleSignOut = () => {

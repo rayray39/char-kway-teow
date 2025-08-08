@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const rateLimit = require('express-rate-limit')
 
 // check for valid JWT in localstorage
 function authenticateToken(req, res, next) {
@@ -16,8 +17,18 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// rate limiter for OpenRouter API calls
+const openRouterLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 3, // Max 3 requests per minute
+    message: { error: "Too many requests. Please try again later." },
+    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+    legacyHeaders: false,  // Disable the deprecated X-RateLimit-* headers
+});
+
+
 // post the prompt to the model via openrouter's api, and returns a response
-router.post('/api/generate-commit', async (req, res) => {
+router.post('/api/generate-commit', openRouterLimiter, async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {

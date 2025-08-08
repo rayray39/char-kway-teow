@@ -55,6 +55,7 @@ router.post('/api/generate-commit', authenticateToken, openRouterLimiter, async 
         });
 
         const data = await response.json();
+
         const modelResponse = data.choices[0].message.content;
 
         if (!modelResponse) {

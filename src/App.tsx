@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
 
-const GIT_COMMIT_MSG_PROMPT = `Format the implementation as a git commit message that follows these rules: the subject line should be capitalized, in the imperative mood, have no ending period, be separated from the body by a blank line, and be wrapped at 72 characters; the body should explain what and why, not how, describing why the change is being made, how it addresses the issue, and what effects it has, including limitations if relevant; avoid assuming the reader knows the original problem or that the code is self-explanatory; do not include patch-set–specific comments; make the first line the most important and impactful.
+const GIT_COMMIT_MSG_PROMPT = `Format the implementation as a git commit message that follows these rules: the subject line should be capitalized, in the imperative mood, have no ending period, be separated from the body by a blank line, and be wrapped at 72 characters; the body should explain what and why, not how, describing why the change is being made, how it addresses the issue, and what effects it has, including limitations if relevant; avoid assuming the reader knows the original problem or that the code is self-explanatory; do not include patch-set–specific comments; make the first line the most important and impactful. Return only the formatted git commit message.
 
 Follow this structure:
 <type>: <description>

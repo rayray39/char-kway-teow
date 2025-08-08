@@ -30,31 +30,46 @@ function App() {
 
         setIsLoading(true);
         setIsSubmitSuccess(false);
-        // try {
-        //     const response = await fetch('http://localhost:5000/openrouter/api/generate-commit', {
-        //         method:'POST',
-        //         headers:{'Content-Type':'application/json'},
-        //         body: JSON.stringify({ prompt })
-        //     })
+        try {
+            const response = await fetch('http://localhost:5000/openrouter/api/generate-commit', {
+                method:'POST',
+                headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            })
 
-        //     const data = await response.json();
+            if (!response.ok) {
+                const errorResponse = await response.text();
+                throw new Error(errorResponse);
+            }
 
-        //     setCommitMessage(data.modelResponse);
-        //     setIsLoading(false);
-        //     setIsSubmitSuccess(true);
-        //     console.log(data.message);
-        // } catch (error) {
-        //     console.error("Error:", error);
-        //     alert("Error: Failed to generate commit message.");
-        // }
+            const data = await response.json();
 
-        // for testing, simulate fetch
-        setTimeout(() => {
-            setCommitMessage('dummy data');
+            setCommitMessage(data.modelResponse);
+
             setIsLoading(false);
             setIsSubmitSuccess(true);
-        }, 2000);
+            console.log(data.message);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error("Error:", error.message);
+            } else {
+                console.error("Unknown error:", error);
+            }
+            alert("Error: Failed to generate commit message.");
+            setIsLoading(false);
+        }
 
+        // for testing, simulate fetch
+        // setTimeout(() => {
+        //     setCommitMessage('dummy data');
+        //     setIsLoading(false);
+        //     setIsSubmitSuccess(true);
+        // }, 2000);
+        // getOpenRouterUsageLimits();
+        
         setPrompt('');
         setEmptyPromptError(false);
     }
@@ -65,6 +80,16 @@ function App() {
         localStorage.removeItem('jwtToken');
         console.log('successfully logged out');
         navigate('/');
+    }
+
+    const getOpenRouterUsageLimits = async () => {
+        // fetches the usage limits from openrouter, credits used and limit will be undefined if using free model
+        const response = await fetch('http://localhost:5000/openrouter/api/get-usage-limits', {
+            method:'GET',
+        })
+
+        const data = await response.json();
+        console.log(data.message);
     }
 
     return (

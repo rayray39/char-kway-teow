@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const rateLimit = require('express-rate-limit')
 
+// check for valid JWT in localstorage
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader?.split(' ')[1];
@@ -15,7 +17,18 @@ function authenticateToken(req, res, next) {
     });
 }
 
-router.post('/api/generate-commit', authenticateToken, async (req, res) => {
+// rate limiter for OpenRouter API calls
+const openRouterLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 3, // Max 3 requests per minute
+    message: { error: "Too many requests. Please try again later." },
+    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+    legacyHeaders: false,  // Disable the deprecated X-RateLimit-* headers
+});
+
+
+// post the prompt to the model via openrouter's api, and returns a response
+router.post('/api/generate-commit', authenticateToken, openRouterLimiter, async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {
@@ -27,12 +40,11 @@ router.post('/api/generate-commit', authenticateToken, async (req, res) => {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY_NEW}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "model": "deepseek/deepseek-chat:free",
-                "max_tokens": 100,
+                "model": "deepseek/deepseek-r1:free",
                 "messages": [
                     {
                         "role": "user",
@@ -55,6 +67,35 @@ router.post('/api/generate-commit', authenticateToken, async (req, res) => {
     } catch (error) {
         console.log('Error in generating a git commit message: ', error);
         return res.status(500).json({ message: 'Failed to generate commit message.' });
+    }
+})
+
+
+// get openrouter usage limits
+router.get('/api/get-usage-limits', async (req, res) => {
+    try {
+        const response = await fetch('https://openrouter.ai/api/v1/key', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${process.env.OPENROUTER_API_KEY_NEW}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // get raw response text
+            console.error('OpenRouter returned error:', errorText);
+            return res.status(response.status).json({ message: `OpenRouter API error: ${errorText}` });
+        }
+
+        const data = await response.json();
+        
+        return res.status(200).json({ 
+            message: 'Successfully fetched openrouter usage limits.',
+            creditsUsed: `${data.usage}`,
+            creditLimit: `${data.limit}`
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Failed to fetched openrouter usage limits.' });
     }
 })
 

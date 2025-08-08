@@ -19,7 +19,7 @@ router.post('/sign-in', (req, res) => {
         },
             secret,
         {
-            expiresIn: '1h'
+            expiresIn: 180
         }
     );
 

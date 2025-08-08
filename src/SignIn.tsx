@@ -26,7 +26,7 @@ function SignIn() {
         // sends OTP to user's email for input
         console.log('sending otp to email...');
 
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email: email,
         })
 
@@ -42,7 +42,6 @@ function SignIn() {
         // verifies the user's otp
         console.log("Verifying user's OTP.");
         const {
-            data: { session },
             error,
         } = await supabase.auth.verifyOtp({
             email: email,

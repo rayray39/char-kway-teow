@@ -99,15 +99,15 @@ function App() {
         navigate('/');
     }
 
-    const getOpenRouterUsageLimits = async () => {
-        // fetches the usage limits from openrouter, credits used and limit will be undefined if using free model
-        const response = await fetch('http://localhost:5000/openrouter/api/get-usage-limits', {
-            method:'GET',
-        })
+    // const getOpenRouterUsageLimits = async () => {
+    //     // fetches the usage limits from openrouter, credits used and limit will be undefined if using free model
+    //     const response = await fetch('http://localhost:5000/openrouter/api/get-usage-limits', {
+    //         method:'GET',
+    //     })
 
-        const data = await response.json();
-        console.log(data.message);
-    }
+    //     const data = await response.json();
+    //     console.log(data.message);
+    // }
 
     return (
         <>

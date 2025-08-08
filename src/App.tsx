@@ -33,7 +33,10 @@ function App() {
         try {
             const response = await fetch('http://localhost:5000/openrouter/api/generate-commit', {
                 method:'POST',
-                headers:{'Content-Type':'application/json'},
+                headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+                    'Content-Type':'application/json'
+                },
                 body: JSON.stringify({ prompt })
             })
 

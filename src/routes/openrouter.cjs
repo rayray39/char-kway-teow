@@ -28,7 +28,7 @@ const openRouterLimiter = rateLimit({
 
 
 // post the prompt to the model via openrouter's api, and returns a response
-router.post('/api/generate-commit', openRouterLimiter, async (req, res) => {
+router.post('/api/generate-commit', authenticateToken, openRouterLimiter, async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {

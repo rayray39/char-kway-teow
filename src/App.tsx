@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
 
-const GIT_COMMIT_MSG_PROMPT = `Format the implementation as a git commit message that follows these rules: the subject line should be capitalized, in the imperative mood, have no ending period, be separated from the body by a blank line, and be wrapped at 72 characters; the body should explain what and why, not how, describing why the change is being made, how it addresses the issue, and what effects it has, including limitations if relevant; avoid assuming the reader knows the original problem or that the code is self-explanatory; do not include patch-set–specific comments; make the first line the most important and impactful. Return only the formatted git commit message.
+const GIT_COMMIT_MSG_PROMPT = `Format the implementation as a git commit message that follows these rules: the subject line should be capitalized, in the imperative mood, have no ending period, be separated from the body by a blank line, and be wrapped at 72 characters; the body should explain what and why, not how, describing why the change is being made, how it addresses the issue, and what effects it has, including limitations if relevant; avoid assuming the reader knows the original problem or that the code is self-explanatory; do not include patch-set–specific comments; make the first line the most important and impactful. Return only the formatted git commit message and keep it concise.
 
 Follow this structure:
 <type>: <description>
@@ -46,7 +46,7 @@ function App() {
             const response = await fetch('http://localhost:5000/openrouter/api/generate-commit', {
                 method:'POST',
                 headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('charkwayteow_jwtToken')}`,
                     'Content-Type':'application/json'
                 },
                 body: JSON.stringify({ prompt: promptToModel })
@@ -94,7 +94,8 @@ function App() {
     const handleSignOut = () => {
         // logs the user out and removes the JWT token from local storage
         console.log('signing out...');
-        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('charkwayteow_jwtToken');
+        localStorage.removeItem('charkwayteow_refreshToken');
         console.log('successfully logged out');
         navigate('/');
     }

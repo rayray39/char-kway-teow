@@ -7,6 +7,12 @@ if (!process.env.OPENROUTER_API_KEY_NEW) {
     console.log('OpenRouter API key NEW successfully loaded.')
 }
 
+if (!process.env.SUPABASE_JWT_SECRET) {
+    console.log('Supabase JWT secret key failed to load.');
+} else {
+    console.log('Supabase JWt secret key successfully loaded.')
+}
+
 const express = require('express');
 const cors = require('cors')
 

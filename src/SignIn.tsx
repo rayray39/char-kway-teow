@@ -42,6 +42,7 @@ function SignIn() {
         // verifies the user's otp
         console.log("Verifying user's OTP.");
         const {
+            data,
             error,
         } = await supabase.auth.verifyOtp({
             email: email,
@@ -52,6 +53,13 @@ function SignIn() {
         if (error) {
             console.log("Error verifying OTP.");
             return false;
+        }
+
+        if (data.session) {
+            const jwtToken = data.session.access_token;         // jwt token
+            const refreshToken = data.session.refresh_token;    // refresh token
+            localStorage.setItem("charkwayteow_jwtToken", jwtToken);
+            localStorage.setItem("charkwayteow_refreshToken", refreshToken);
         }
     
         console.log("Successfully verified OTP.");
@@ -76,44 +84,17 @@ function SignIn() {
         setIsOtpValid(true);   // unrender alert component at start
         setIsLoading(true);
 
-        // make call to sign in route on backend
-        try {
-            const isOtpVerified = await verifyOtp();
-            console.log(`is otp verified: ${isOtpVerified}`)
-            if (!isOtpVerified) {
-                // check for valid otp before generating JWT token
-                throw new Error();
-            }
-
-            const response = await fetch('http://localhost:5000/auth/sign-in', {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({
-                    email: email,
-                    otp: otp
-                })
-            })
-
-            if (!response.ok) {
-                throw new Error();
-            }
-
-            const data = await response.json();
-            console.log(data.message);
-
-            localStorage.setItem('jwtToken', data.token);   // auth router will return JWT token
-            setIsOtpValid(true);
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 1000);
-        } catch (error) {
-            console.log('Failed to sign in: ', error);
+        const isOtpVerified = await verifyOtp();    // verifies OTP and issues tokens if valid
+        console.log(`is otp verified: ${isOtpVerified}`)
+        if (!isOtpVerified) {
             setIsOtpValid(false);
             setIsLoading(false);
             return;
         }
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 1000);
 
         navigate('/app');
     }

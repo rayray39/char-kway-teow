@@ -1,4 +1,4 @@
-import { Button, CopyButton, Group, Loader, Stack, Textarea, Title } from "@mantine/core"
+import { Button, CopyButton, Group, Loader, Stack, Textarea, Title, Text } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
@@ -188,12 +188,18 @@ function App() {
 
                     <Button variant="default" onClick={handleSubmit} style={{
                         width:'100%',
-                        marginBottom:'2rem'
+                        marginBottom:'1rem'
                     }}>Submit</Button>
 
                     {
                         isLoading ? <Loading /> : (isSubmitSuccess ? <CommitMessage text={commitMessage} /> : null)
                     }
+
+                    <Text size="sm" style={{
+                        textAlign:'center',
+                        position:'relative',
+                        bottom: 0,
+                    }}>© rayray39, 2025</Text>
 
                 </Stack>
             </Stack>
@@ -214,9 +220,9 @@ function CommitMessage({ text }:{ text:string }) {
             onChange={(event) => setOutputText(event.target.value)}
         />
 
-        <CopyButton value={outputText} timeout={1000}>
+        <CopyButton value={outputText} timeout={1000} >
             {({ copied, copy }) => (
-                <Button color='green' variant={copied ? 'light' : 'default'} onClick={copy}>
+                <Button color='green' variant={copied ? 'light' : 'default'} onClick={copy} >
                     {copied ? 'copied' : 'copy'}
                 </Button>
             )}

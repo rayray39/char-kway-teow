@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Loader, Stack, TextInput, Title, Tooltip } from "@mantine/core"
+import { Alert, Button, Group, Loader, Stack, TextInput, Title, Tooltip, Text } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { useColorScheme } from "./utils/ColorSchemeContext";
@@ -145,6 +145,9 @@ function SignIn() {
                 <Group
                     justify="space-between"
                     grow
+                    // style={{
+                    //     marginBottom: isOtpValid ? '330px' : 'none'
+                    // }}
                 >
                     <Tooltip label='Check email for OTP' withArrow arrowPosition="center" arrowSize={4} position="bottom">
                         <Button variant="default" onClick={handleGetOtp} disabled={!email}>Get OTP</Button>
@@ -164,6 +167,10 @@ function SignIn() {
                         Incorrect user credentials!
                     </Alert>
                 }
+
+                <Text size="sm" style={{
+                    textAlign:'center',
+                }}>© rayray39, 2025</Text>
             </Stack>
         </Stack>
     </>
